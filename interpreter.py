@@ -68,14 +68,14 @@ class Interpreter:
     def __read_new_word(self, word):
         if self.current_command is None:
             self.current_command = Command(word)
-        elif not self.current_command.in_relation(word):
+        elif not self.current_command.is_related_to(word):
             # Next nc-word is not connected to current_command
             # Current command is executed and next nc-word is set to current command with new Command
             self.__execute_current()
             self.current_command = Command(word)
-        elif self.current_command.in_relation(word) and word[0] not in PARAMETER_TYPE:
+        elif self.current_command.is_related_to(word) and word[0] not in PARAMETER_TYPE:
             self.current_command.set_function(word)
-        elif self.current_command.in_relation(word) and word[0] in PARAMETER_TYPE:
+        elif self.current_command.is_related_to(word) and word[0] in PARAMETER_TYPE:
             self.current_command.set_parameters(word)
         else:
             print("Error! NC-word {} could not be processed.".format(word))

@@ -42,7 +42,7 @@ class Command:
         self.address = word
 
     # Decides whether given word (e.g. M03, G00, X-12.00) is linked/in relation to this command
-    def in_relation(self, word):
+    def is_related_to(self, word):
         # Only relations that are in the task code
         if word == "M06" and self.tool_name != "":
             return True
