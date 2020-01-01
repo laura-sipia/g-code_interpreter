@@ -62,3 +62,19 @@ class MachineClient:
     def coolant_off(self):
         """ Turns spindle coolant off. """
         print("Coolant turned off.")
+
+    def radius_compensation_on(self):
+        """ Turns radius compensation on. """
+        print("Radius compensation on.")
+
+    def radius_compensation_off(self):
+        """ Turns radius compensation off. """
+        print("Radius compensation off.")
+
+    def length_offset_compensation_on(self):
+        """ Turns length offset compensation on. """
+        print("Length offset compensation on.")
+
+    def length_offset_compensation_off(self):
+        """ Turns length offset compensation off. """
+        print("Length offset compensation off.")

@@ -1,4 +1,5 @@
 PARAMETER_TYPES = ["X", "Y", "Z"]
+MOVING_ADDRESS = ["G00", "G01", "G28"]
 
 
 # Command's purpose is to handle one executable command
@@ -11,9 +12,9 @@ PARAMETER_TYPES = ["X", "Y", "Z"]
 class Command:
 
     def __init__(self, word):
-        self.X = 0.0
-        self.Y = 0.0
-        self.Z = 0.0
+        self.X = None
+        self.Y = None
+        self.Z = None
         self.spindle_speed = 0.0
         self.tool_name = ""
         self.address = None
@@ -48,7 +49,7 @@ class Command:
             return True
         elif word == "M03" and self.spindle_speed != 0:
             return True
-        elif word[0] in PARAMETER_TYPES and (self.address == "G01" or self.address == "G00" or self.address == "G28"):
+        elif word[0] in PARAMETER_TYPES and self.address in MOVING_ADDRESS:
             return True
         else:
             return False

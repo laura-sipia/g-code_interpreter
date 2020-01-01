@@ -27,15 +27,15 @@ class Interpreter:
             "01": dict(function=self.__move_xyz, parameters=None),
             "17": dict(function=self.__print, parameters="LOG. XY plane selection."),
             "21": dict(function=self.__print, parameters="LOG. Programming in millimeters."),
-            "40": dict(function=self.__print, parameters="LOG. Tool radius compensation off."),
-            "49": dict(function=self.__print, parameters="LOG. Tool length offset compensation cancel."),
+            "40": dict(function=self.__radius_compensation, parameters=False),
+            "49": dict(function=self.__length_offset_compensation, parameters=False),
             "80": dict(function=self.__print, parameters="LOG. Cancel canned cycle."),
             "94": dict(function=self.__print, parameters="LOG. Feedrate per minute."),
             "90": dict(function=self.__print,
                        parameters="LOG. Fixed cycle, simple cycle, for roughing (Z-axis emphasis)."),
             "54": dict(function=self.__print, parameters="LOG. Work coordinate systems (WCSs)."),
             "91": dict(function=self.__print, parameters="LOG. Incremental programming."),
-            "28": dict(function=self.__move_home_z, parameters=None)
+            "28": dict(function=self.__move_home, parameters=None)
         }
 
     def read_line(self, line, line_nmbr):
@@ -47,7 +47,6 @@ class Interpreter:
             if line[0] == "%":
                 if line_nmbr == 0:
                     print("LOG. Program has started.")
-                    self.__go_home()
                 else:
                     # Execute the last command of the interpreter
                     self.__execute_current()
@@ -150,19 +149,41 @@ class Interpreter:
         self.machine_client.home()
 
     def __move_xyz(self):
-        if self.current_command.X != 0:
+        if self.current_command.X is not None:
             x_value = float(self.current_command.X)
             self.machine_client.move_x(x_value)
-        if self.current_command.Y != 0:
+        if self.current_command.Y is not None:
             y_value = float(self.current_command.Y)
             self.machine_client.move_y(y_value)
-        if self.current_command.Z != 0:
+        if self.current_command.Z is not None:
             z_value = float(self.current_command.Z)
             self.machine_client.move_z(z_value)
+        if self.current_command.X is None and self.current_command.Y is None and self.current_command.Z is None:
+            self.machine_client.home()
 
-    def __move_home_z(self):
-        z_value = float(self.current_command.Z)
-        self.machine_client.move(0, 0, z_value)
+    def __move_home(self):
+        x_value = 0.0
+        y_value = 0.0
+        z_value = 0.0
+        if self.current_command.X is not None:
+            x_value = float(self.current_command.X)
+        if self.current_command.Y is not None:
+            y_value = float(self.current_command.Y)
+        if self.current_command.Z is not None:
+            z_value = float(self.current_command.Z)
+        self.machine_client.move(x_value, y_value, z_value)
 
     def __print(self, message):
         print(message)
+
+    def __radius_compensation(self, power):
+        if power:
+            self.machine_client.radius_compensation_on()
+        else:
+            self.machine_client.radius_compensation_off()
+
+    def __length_offset_compensation(self, power):
+        if power:
+            self.machine_client.length_offset_compensation_on()
+        else:
+            self.machine_client.length_offset_compensation_off()
