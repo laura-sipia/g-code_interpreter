@@ -78,7 +78,6 @@ class Interpreter:
             self.current_command.set_parameters(word)
         else:
             print("Error! NC-word {} could not be processed.".format(word))
-            return
 
     def __execute_current(self):
         if self.current_command is not None:
@@ -95,7 +94,6 @@ class Interpreter:
             self.current_command = None
         else:
             print("Error! No current command to execute.")
-            return
 
     def __execute_f_command(self):
         if self.current_command.address is None:
